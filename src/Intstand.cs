@@ -30,19 +30,22 @@ namespace GRAL_2001
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static (float, float) IntStandCalculate(int nteil, float Roughness, float DiffBuilding, float windge, float sigmauHurley)
         {
-            float U0int = 0;
-            float V0int = 0;
+            // U0 and V0 scaling with wind speed and z0
+            float U0int = windge * (0.2F * MathF.Pow(windge, -0.9F) + 0.32F * Roughness + 0.18F);
+            U0int = Program.FloatMax(U0int, 0.3F) * Program.StdDeviationV;
+            float V0int = U0int;
+
             if ((Program.IStatistics == Consts.MeteoZR) || (Program.IStatistics == Consts.MeteoSonic)) 
             {
                 if (DiffBuilding <= Program.MeasurementHeight[1])
                 {
-                    U0int = Program.U0[1];
-                    V0int = Program.V0[1];
+                    U0int *= Program.U0scale[1];
+                    V0int *= Program.V0scale[1];
                 }
                 else if (DiffBuilding >= Program.MeasurementHeight[Program.MetProfileNumb])
                 {
-                    U0int = Program.U0[Program.MetProfileNumb];
-                    V0int = Program.V0[Program.MetProfileNumb];
+                    U0int *= Program.U0scale[Program.MetProfileNumb];
+                    V0int *= Program.V0scale[Program.MetProfileNumb];
                 }
                 else
                 {
@@ -55,15 +58,9 @@ namespace GRAL_2001
                         }
                     }
                     float help = 1 / (Program.MeasurementHeight[ipo] - Program.MeasurementHeight[ipo - 1]) * (DiffBuilding - Program.MeasurementHeight[ipo - 1]);
-                    U0int = Program.U0[ipo - 1] + (Program.U0[ipo] - Program.U0[ipo - 1]) * help;
-                    V0int = Program.V0[ipo - 1] + (Program.V0[ipo] - Program.V0[ipo - 1]) * help;
+                    U0int *= Program.U0scale[ipo - 1] + (Program.U0scale[ipo] - Program.U0scale[ipo - 1]) * help;
+                    V0int *= Program.V0scale[ipo - 1] + (Program.V0scale[ipo] - Program.V0scale[ipo - 1]) * help;
                 }
-            }
-            else // Wind speed, wind direction, stability class - default case when using meteopgt.all
-            {
-                U0int = windge * (0.2F * MathF.Pow(windge, -0.9F) + 0.32F * Roughness + 0.18F);
-                U0int = Program.FloatMax(U0int, 0.3F) * Program.StdDeviationV;
-                V0int = U0int;
             }
 
             //enhancing horizontal diffusion for point sources (Hurley, 2005)

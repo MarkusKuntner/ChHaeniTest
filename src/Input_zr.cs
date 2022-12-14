@@ -113,6 +113,15 @@ namespace GRAL_2001
                     for (int k = 1; k <= Program.MetProfileNumb; k++)
                     {
                         Program.V0[k] = Program.U0[k];
+
+                        // add U0, V0 scaling factor
+                        // Z0 and StdDeviationV are set to user input before here
+                        float ws = MathF.Sqrt(Program.Pow2(Program.ObsWindU[k]) + Program.Pow2(Program.ObsWindV[k]));
+                        float U0model = Program.FloatMax(ws * (0.2F * MathF.Pow(ws, -0.9F) + 
+                                0.32F * Program.Z0 + 0.18F), 0.3F) * Program.StdDeviationV;
+                        Program.U0scale[k] = Program.U0[k] / U0model;
+                        Program.V0scale[k] = Program.V0[k] / U0model;
+
                     }
 
                     Program.IWETstart = Program.IDISP + 1;

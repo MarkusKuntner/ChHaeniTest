@@ -437,7 +437,6 @@ namespace GRAL_2001
                     for (int k = 1; k <= NKK - 1; ++k)
                     {
                         int ipo = 1;
-                        float V0int = Program.V0[1];
 
                         if (i == 1)  //avoiding dead locks
                         {
@@ -450,20 +449,25 @@ namespace GRAL_2001
 
                         float zhilf = Program.HOKART[k] - (Program.AHK[i][j] - Program.HOKART[Program.KKART[i][j]]);
 
-                        float U0int = 0;
-                        float varw = 0;
+                        // U0 and V0 scaling with wind speed and z0
+                        double windhilf = Math.Max(Math.Sqrt(Program.Pow2(Program.UK[i][j][k]) + Program.Pow2(Program.VK[i][j][k])), 0.01);
+                        float U0int = (float)(windhilf * (0.2 * Math.Pow(windhilf, -0.9) + 0.32 * rough + 0.18));
+                        U0int = Program.FloatMax(U0int, 0.3F) * Program.StdDeviationV;
+                        // TODO (hac): check why V0 was not scaled, contrary to code in IntStandCalculate()
+                        float V0int = U0int;
+
                         if ((Program.IStatistics == Consts.MeteoZR) || (Program.IStatistics == Consts.MeteoSonic))
                         {
                             //interpolation of observed standard deviations of horizontal wind fluctuations
                             if (zhilf <= Program.MeasurementHeight[1])
                             {
-                                U0int = Program.U0[1];
-                                V0int = Program.V0[1];
+                                U0int *= Program.U0scale[1];
+                                V0int *= Program.V0scale[1];
                             }
                             else if (zhilf >= Program.MeasurementHeight[Program.MetProfileNumb])
                             {
-                                U0int = Program.U0[Program.MetProfileNumb];
-                                V0int = Program.V0[Program.MetProfileNumb];
+                                U0int *= Program.U0scale[Program.MetProfileNumb];
+                                V0int *= Program.V0scale[Program.MetProfileNumb];
                             }
                             else
                             {
@@ -474,19 +478,14 @@ namespace GRAL_2001
                                         ipo = iprof + 1;
                                     }
                                 }
-                                U0int = Program.U0[ipo - 1] + (Program.U0[ipo] - Program.U0[ipo - 1]) / (Program.MeasurementHeight[ipo] - Program.MeasurementHeight[ipo - 1]) *
+                                U0int *= Program.U0scale[ipo - 1] + (Program.U0scale[ipo] - Program.U0scale[ipo - 1]) / (Program.MeasurementHeight[ipo] - Program.MeasurementHeight[ipo - 1]) *
                                     (zhilf - Program.MeasurementHeight[ipo - 1]);
-                                V0int = Program.V0[ipo - 1] + (Program.U0[ipo] - Program.U0[ipo - 1]) / (Program.MeasurementHeight[ipo] - Program.MeasurementHeight[ipo - 1]) *
+                                V0int *= Program.V0scale[ipo - 1] + (Program.U0scale[ipo] - Program.U0scale[ipo - 1]) / (Program.MeasurementHeight[ipo] - Program.MeasurementHeight[ipo - 1]) *
                                     (zhilf - Program.MeasurementHeight[ipo - 1]);
                             }
                         }
-                        else
-                        {
-                            double windhilf = Math.Max(Math.Sqrt(Program.Pow2(Program.UK[i][j][k]) + Program.Pow2(Program.VK[i][j][k])), 0.01);
-                            U0int = (float)(windhilf * (0.2 * Math.Pow(windhilf, -0.9) + 0.32 * rough + 0.18));
-                            U0int = (float)Math.Max(U0int, 0.3) * Program.StdDeviationV;
-                        }
 
+                        float varw = 0;
                         if (ObLength < 0)
                         {
                             varw = (Program.Pow2(ust) * Program.Pow2(1.15F + 0.1F * MathF.Pow(Program.BdLayHeight / (-ObLength), 0.67F)) * Program.Pow2(Program.StdDeviationW));

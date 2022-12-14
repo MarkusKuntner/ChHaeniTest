@@ -75,6 +75,14 @@ namespace GRAL_2001
                     Program.ObsWindU[1] = (float)(Program.WindVelGral * Math.Cos(Program.WindDirGral));
                     Program.ObsWindV[1] = (float)(Program.WindVelGral * Math.Sin(Program.WindDirGral));
 
+                    // add U0, V0 scaling factor
+                    // Z0 and StdDeviationV are set to user input before here
+                    // TODO (hac): move scaling function to ProgramFunctions.cs
+                    float U0model = Program.FloatMax(Program.WindVelGral * (0.2F * MathF.Pow(Program.WindVelGral, -0.9F) + 
+                            0.32F * Program.Z0 + 0.18F), 0.3F) * Program.StdDeviationV;
+                    Program.U0scale[1] = Program.U0[1] / U0model;
+                    Program.V0scale[1] = Program.V0[1] / U0model;
+
                     //friction velocity and boundary-layer height
                     for (int ix = 1; ix <= Program.NX; ix++)
                     {
