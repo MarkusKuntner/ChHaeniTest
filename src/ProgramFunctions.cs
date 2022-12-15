@@ -31,9 +31,12 @@ namespace GRAL_2001
         /// <returns>standard deviation of the horizontal wind speed</returns>
         public static float CalcU0(float ws, float z0, float t_scale)
         {
-            return Program.FloatMax(
-                    ws * (0.2F * MathF.Pow(ws, -0.9F) + 0.32F * z0 + 0.18F)
-                    , 0.3F) * t_scale;
+            // HAFL sonic data
+            return 0.3F + 0.23F * ws;
+            // old dependence
+            /* return Program.FloatMax( */
+            /*         ws * (0.2F * MathF.Pow(ws, -0.9F) + 0.32F * z0 + 0.18F) */
+            /*         , 0.3F) * t_scale; */
         }
 
         /// <summary>
