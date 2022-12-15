@@ -77,9 +77,7 @@ namespace GRAL_2001
 
                     // add U0, V0 scaling factor
                     // Z0 and StdDeviationV are set to user input before here
-                    // TODO (hac): move scaling function to ProgramFunctions.cs
-                    float U0model = Program.FloatMax(Program.WindVelGral * (0.2F * MathF.Pow(Program.WindVelGral, -0.9F) + 
-                            0.32F * Program.Z0 + 0.18F), 0.3F) * Program.StdDeviationV;
+                    float U0model = Program.CalcU0(Program.WindVelGral, Program.Z0, Program.StdDeviationV);
                     Program.U0scale[1] = Program.U0[1] / U0model;
                     Program.V0scale[1] = Program.V0[1] / U0model;
 

@@ -450,9 +450,8 @@ namespace GRAL_2001
                         float zhilf = Program.HOKART[k] - (Program.AHK[i][j] - Program.HOKART[Program.KKART[i][j]]);
 
                         // U0 and V0 scaling with wind speed and z0
-                        double windhilf = Math.Max(Math.Sqrt(Program.Pow2(Program.UK[i][j][k]) + Program.Pow2(Program.VK[i][j][k])), 0.01);
-                        float U0int = (float)(windhilf * (0.2 * Math.Pow(windhilf, -0.9) + 0.32 * rough + 0.18));
-                        U0int = Program.FloatMax(U0int, 0.3F) * Program.StdDeviationV;
+                        float windhilf = (float)Math.Max(Math.Sqrt(Program.Pow2(Program.UK[i][j][k]) + Program.Pow2(Program.VK[i][j][k])), 0.01);
+                        float U0int = Program.CalcU0(windhilf, rough, Program.StdDeviationV);
                         // TODO (hac): check why V0 was not scaled, contrary to code in IntStandCalculate()
                         float V0int = U0int;
 

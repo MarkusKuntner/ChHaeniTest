@@ -20,6 +20,22 @@ namespace GRAL_2001
 {
     partial class Program
     {
+
+        /// <summary>
+        /// Calculate the standard deviation of the horizontal wind speed components (u and v) 
+        /// from the average wind speed and roughness length
+        /// </summary>
+        /// <param name="ws">average horizontal wind speed</param>
+        /// <param name="z0">roughness length (z0)</param>
+        /// <param name="t_scale">scaling of stdev depending on averaging time (Program.StdDeviationV)</param>
+        /// <returns>standard deviation of the horizontal wind speed</returns>
+        public static float CalcU0(float ws, float z0, float t_scale)
+        {
+            return Program.FloatMax(
+                    ws * (0.2F * MathF.Pow(ws, -0.9F) + 0.32F * z0 + 0.18F)
+                    , 0.3F) * t_scale;
+        }
+
         /// <summary>
         /// Generate the vertical Grid for GRAL calculations for flat terrain
         /// </summary>

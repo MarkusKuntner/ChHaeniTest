@@ -31,8 +31,7 @@ namespace GRAL_2001
         public static (float, float) IntStandCalculate(int nteil, float Roughness, float DiffBuilding, float windge, float sigmauHurley)
         {
             // U0 and V0 scaling with wind speed and z0
-            float U0int = windge * (0.2F * MathF.Pow(windge, -0.9F) + 0.32F * Roughness + 0.18F);
-            U0int = Program.FloatMax(U0int, 0.3F) * Program.StdDeviationV;
+            float U0int = Program.CalcU0(windge, Roughness, Program.StdDeviationV);
             float V0int = U0int;
 
             if ((Program.IStatistics == Consts.MeteoZR) || (Program.IStatistics == Consts.MeteoSonic)) 
