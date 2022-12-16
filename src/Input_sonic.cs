@@ -77,11 +77,8 @@ namespace GRAL_2001
 
                     // add U0, V0 scaling factor
                     // Z0 and StdDeviationV are set to user input before here
-                    float U0model = Program.FloatMax(Program.WindVelGral * (0.2F * MathF.Pow(Program.WindVelGral, -0.9F) + 
-                            0.32F * Program.Z0 + 0.18F), 0.3F) * Program.StdDeviationV;
-                    Program.U0scale[1] = Program.U0[1] / U0model;
-                    Program.V0scale[1] = Program.V0[1] / U0model;
-
+                    Program.U0initial[1] = MathF.Sqrt(MathF.Pow(Program.ObsWindU[1], 2) + MathF.Pow(Program.ObsWindV[1], 2));
+                    
                     //friction velocity and boundary-layer height
                     for (int ix = 1; ix <= Program.NX; ix++)
                     {
@@ -91,6 +88,7 @@ namespace GRAL_2001
                             Program.Ob[ix][iy] = Program.Ob[1][1];
                         }
                     }
+                    Program.AdaptiveRoughnessMax = 0;
 
                     Program.IWETstart = Program.IDISP + 1;
                 }
