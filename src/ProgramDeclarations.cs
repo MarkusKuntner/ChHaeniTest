@@ -359,13 +359,9 @@ namespace GRAL_2001
         ///</summary>
         public static float[] V0 = new float[51];
         ///<summary>
-        ///Scaling factor to match observed standard deviation of u-wind fluctuations
+        ///Initial wind speed for the scaling to match observed standard deviation of u-wind fluctuations
         ///</summary>
-        public static float[] U0scale = new float[51];
-        ///<summary>
-        ///Scaling factor to match observed standard deviation of v-wind fluctuations
-        ///</summary>
-        public static float[] V0scale = new float[51];
+        public static float[] U0initial = new float[51];
         ///<summary>
         ///Universal constant in z-direction
         ///</summary>
