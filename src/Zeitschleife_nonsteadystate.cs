@@ -242,7 +242,7 @@ namespace GRAL_2001
             float deltaZ = roughZ0;
 
             //vertical interpolation of horizontal standard deviations of wind component fluctuations between observations
-            (float U0int, float V0int) = Zeitschleife.IntStandCalculate(0, roughZ0, PartHeightAboveBuilding, windge, sigmauhurly);
+            (float U0int, float V0int) = Zeitschleife.IntStandCalculate(0, roughZ0, PartHeightAboveBuilding, MathF.Sqrt(Program.Pow2(windge) + Program.Pow2(UZint)), sigmauhurly);
 
             //remove particles above boundary-layer
             //if ((PartHeightAboveBuilding > blh) && (Program.Ob[GrammCellX][GrammCellY] < 0)) //26042020 (Ku): removed in transient mode -> particles shoulb be tracked above blh
@@ -463,27 +463,29 @@ namespace GRAL_2001
                 {
                     velz = 0.01F;
                 }
-
-                short _kkart = Program.KKART[FFCellX][FFCellY];
-                //solid wall west of the particle
-                if ((Program.KKART[FFCellX - 1][FFCellY] > _kkart) && (IndexK <= Program.KKART[FFCellX - 1][FFCellY]) && (Program.CUTK[FFCellX - 1][FFCellY] > 0))
+                if (topo == Consts.TerrainAvailable)
                 {
-                    velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(-Program.UK[FFCellX + 1][FFCellY][IndexK], 0);
-                }
-                //solid wall east of the particle
-                if ((Program.KKART[FFCellX + 1][FFCellY] > _kkart) && (IndexK <= Program.KKART[FFCellX + 1][FFCellY]) && (Program.CUTK[FFCellX + 1][FFCellY] > 0))
-                {
-                    velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(Program.UK[FFCellX][FFCellY][IndexK], 0);
-                }
-                //solid wall south of the particle
-                if ((Program.KKART[FFCellX][FFCellY - 1] > _kkart) && (IndexK <= Program.KKART[FFCellX][FFCellY - 1]) && (Program.CUTK[FFCellX][FFCellY - 1] > 0))
-                {
-                    velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(-Program.VK[FFCellX][FFCellY + 1][IndexK], 0);
-                }
-                //solid wall north of the particle
-                if ((Program.KKART[FFCellX][FFCellY + 1] > _kkart) && (IndexK <= Program.KKART[FFCellX][FFCellY + 1]) && (Program.CUTK[FFCellX][FFCellY + 1] > 0))
-                {
-                    velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(Program.VK[FFCellX][FFCellY][IndexK], 0);
+                    short _kkart = Program.KKART[FFCellX][FFCellY];
+                    //solid wall west of the particle
+                    if ((Program.KKART[FFCellX - 1][FFCellY] > _kkart) && (IndexK <= Program.KKART[FFCellX - 1][FFCellY]) && (Program.CUTK[FFCellX - 1][FFCellY] > 0))
+                    {
+                        velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(-Program.UK[FFCellX + 1][FFCellY][IndexK], 0);
+                    }
+                    //solid wall east of the particle
+                    if ((Program.KKART[FFCellX + 1][FFCellY] > _kkart) && (IndexK <= Program.KKART[FFCellX + 1][FFCellY]) && (Program.CUTK[FFCellX + 1][FFCellY] > 0))
+                    {
+                        velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(Program.UK[FFCellX][FFCellY][IndexK], 0);
+                    }
+                    //solid wall south of the particle
+                    if ((Program.KKART[FFCellX][FFCellY - 1] > _kkart) && (IndexK <= Program.KKART[FFCellX][FFCellY - 1]) && (Program.CUTK[FFCellX][FFCellY - 1] > 0))
+                    {
+                        velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(-Program.VK[FFCellX][FFCellY + 1][IndexK], 0);
+                    }
+                    //solid wall north of the particle
+                    if ((Program.KKART[FFCellX][FFCellY + 1] > _kkart) && (IndexK <= Program.KKART[FFCellX][FFCellY + 1]) && (Program.CUTK[FFCellX][FFCellY + 1] > 0))
+                    {
+                        velz += velz / MathF.Abs(velz) * 0.67F * Program.FloatMax(Program.VK[FFCellX][FFCellY][IndexK], 0);
+                    }
                 }
                 //******************************************************************************************************************** OETTL, 31 AUG 2016
 
@@ -519,7 +521,7 @@ namespace GRAL_2001
                  */
 
                 //vertical interpolation of horizontal standard deviations of wind speed components
-                (U0int, V0int) = Zeitschleife.IntStandCalculate(0, roughZ0, PartHeightAboveBuilding, windge, sigmauhurly);
+                (U0int, V0int) = Zeitschleife.IntStandCalculate(0, roughZ0, PartHeightAboveBuilding, MathF.Sqrt(Program.Pow2(windge) + Program.Pow2(UZint)), sigmauhurly);
 
                 //determination of the meandering parameters according to Oettl et al. (2006)
                 float param = 0;
